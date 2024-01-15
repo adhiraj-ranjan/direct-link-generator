@@ -4,11 +4,25 @@ import requests
 from os import environ
 
 TOKEN = environ['TOKEN'] # Bot token here
+CHANNEL_USERNAME = "@truebotsc"
 
 async def start(update, context):
     await update.message.reply_text("🔥 Supported Sites\n - GoogleDrive\n - OneDrive\n - MediaFire")
 
 async def handle_url(update, context):
+
+    # ask the user to join the channel
+    user_member = await context.bot.get_chat_member(
+        chat_id=CHANNEL_USERNAME, user_id=update.message.from_user.id)
+
+    if user_member.status == "member" or user_member.status == "administrator" or user_member.status == "creator":
+        pass
+    else:
+        await update.message.reply_text(
+            f"Join TrueBots [💀] {CHANNEL_USERNAME} to use the bot and to Explore more useful bots"
+        )
+        return
+    
     req_url = extract_first_link(update.message.text)
     if not req_url:
         await update.message.reply_text("URL not found!")
